@@ -1,0 +1,229 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: prateek
+ * Date: 28/01/2015
+ * Time: 10:55
+ */
+
+  abstract class UserLib {
+
+      /**
+       * @var null
+       */
+    protected $id = null;
+    protected $email = null;
+    protected $userName = null;
+    protected $role = null;
+    protected $firstName = null;
+    protected $lastName = null;
+    protected $address = null;
+    protected $contact = null;
+    protected $organization = null;
+    protected $password = null;
+    protected $projectId = null;
+    protected $accessLevel = null;
+
+
+
+      /**
+       * @return mixed
+       */
+      abstract protected function insert();
+
+      /**
+       * @return mixed
+       */
+      abstract protected function isManager();
+
+
+
+
+      /**
+       * Sets the Local Variables to the input provided by the user.
+       */
+//      public function setInput(){
+//          $this->firstName = Input::get('firstname');
+//          $this->email = Input::get('email');
+//          self::setRole();
+//          $this->lastName = Input::get('lastname');
+//          $this->password = Hash::make(Input::get('password'));
+//          $this->organization  = Input::get('organization');
+//      }
+
+
+
+      /**
+       * Function to set-up the user's role based on their access level.
+       */
+//      public function setRole(){
+//          $role = Input::get('role_user');
+//
+//          if($role == 'A' || $role == 'B' || $role == 'C' || $role == 'D'){
+//              $this->role = 'manager';
+//          }elseif($role == 'G' || $role == 'H' || $role == 'I'){
+//              $this->role = 'officer';
+//          }
+//
+//      }
+
+
+      public function getName(){
+
+      }
+
+      /**
+       * @return null
+       */
+      function getId(){
+          return $this->id;
+      }
+
+      /**
+       *
+       * @return mixed
+       */
+      function getEmail(){
+
+          return $this->email;
+      }
+
+      /**
+       * @return null
+       */
+      function getUserName(){
+          return $this->userName;
+      }
+
+      /**
+       * @return null
+       */
+      function getRole(){
+          return $this->role;
+      }
+
+      /**
+       * @return null
+       */
+      function getFirstName(){
+          return $this->firstName;
+      }
+
+      /**
+       * @return null
+       */
+      function getLastName(){
+          return $this->lastName;
+      }
+
+      /**
+       * @return null
+       */
+      function getAddress(){
+          return $this->address;
+      }
+
+      /**
+       * @return null
+       */
+      function getContact(){
+          return $this->contact;
+      }
+
+      /**
+       * @return null
+       */
+      function getOrganization(){
+          return $this->organization;
+      }
+
+      /**
+       * @return null
+       */
+      function getPassword(){
+          return $this->password;
+      }
+
+      /**
+       * @return null
+       */
+      function getProjectId(){
+          return $this->projectId;
+      }
+
+
+
+      /**
+       * Sets the Directory with the name of the Organization to store the user's file.
+       */
+      function setDirectory(){
+
+          $path = public_path();
+          $parentDir = $path."/Organizations/";
+
+          if(!is_dir($parentDir))
+              mkdir($parentDir, 0755);
+
+          $neworg = $parentDir.$this->organization."/";
+          if(!is_dir($neworg))
+              mkdir($neworg, 0755);
+
+      }
+
+      /**
+       * @return bool
+       *
+       * Check if user is logged in and creates Session for the user.
+       */
+      function checkLogin(){
+
+          if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>Input::get('password'))))
+          {
+              self::setSessions();
+              return true;
+          }
+
+          return false;
+      }
+
+      /**
+       * Function to set-up the session.
+       */
+      public function setSessions(){
+
+              if(!Session::get('user'))
+              {
+
+                  Session::put('user', $this->firstName);
+                  Session::put('userAccess',$this->accessLevel);
+                  Session::put('userId', $this->id);
+                  Session::put('email', $this->email);
+                  Session::put('role', $this->role);
+              }
+
+      }
+
+      /**
+       * Log out
+       */
+      function logOut(){
+
+          if (Auth::check())
+          {
+              Auth::logout();
+              Session::flush();
+
+              $this->firstName = null;
+              $this->email = null;
+              $this->role = null;
+              $this->lastName = null;
+              $this->password = null;
+              $this->organization  = null;
+
+          }
+
+      }
+
+
+
+}

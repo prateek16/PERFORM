@@ -1,0 +1,91 @@
+<?php
+/**
+ *
+ * User: Prateek Singh
+ * Date: 28/01/2015
+ * Time: 10:58
+ */
+
+class ManagerLib extends UserLib {
+
+
+    public function __construct($id){
+
+        if($id!=null){
+            $user = User::where('id', '=', $id)->first();
+
+            $this->id = $user->id;
+            $this->email = $user->email;
+            $this->role = $user->role;
+            $this->firstName = $user->firstName;
+            $this->lastName = $user->lastName;
+            $this->address = $user->address;
+            $this->contact = $user->contact;
+            $this->organization = $user->organization;
+        }else{
+
+
+
+
+                $this->firstName = Input::get('firstname');
+                $this->email = Input::get('email');
+                $this->role = 'manager';
+                $this->lastName = Input::get('lastname');
+                $this->password = Hash::make(Input::get('password'));
+                $this->organization  = Input::get('organization');
+
+        }
+
+
+
+
+    }
+
+    /**
+     * Setting the Access Level.
+     * Assigning the userId to the managerId in the database.
+     */
+//    public function setAccessLevel(){
+//        $this->accessLevel = "Manager";
+//
+//
+//    }
+
+
+    /**
+     * function insert()
+     * To insert the records into the database from the local variables.
+     */
+    public function insert(){
+
+        $user = new User;
+        $user->email = $this->email;
+        $user->role = $this->role;
+        $user->firstName = $this->firstName;
+        $user->lastName = $this->lastName;
+        $user->password = $this->password;
+        $user->organization = $this->organization;
+        $user->save();
+
+
+
+        $this->id = $user->id;
+
+        $manager = new Manager;
+        $manager->userId = $this->id;
+        $manager->save();
+
+    }
+
+    /**
+     * @return bool
+     *
+     * Checks if User is a Manager
+     */
+    public function isManager(){
+        return true;
+    }
+
+
+
+}
